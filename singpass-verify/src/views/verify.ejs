@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Verify Your Identity - JustRentLah</title>
+  <style>
+    :root {
+      --primary: #1a1a2e;
+      --accent: #e94560;
+      --accent-hover: #d63851;
+      --bg: #0f0f23;
+      --card-bg: #16213e;
+      --text: #eaeaea;
+      --text-muted: #a0a0b0;
+      --border: #2a2a4a;
+      --success: #00d97e;
+      --singpass-red: #c73e36;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .header {
+      background: var(--primary);
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .logo {
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+
+    .logo span { color: var(--accent); }
+
+    .nav-link {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 14px;
+      transition: color 0.2s;
+    }
+
+    .nav-link:hover { color: var(--text); }
+
+    .main {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 48px 40px;
+      max-width: 480px;
+      width: 100%;
+      text-align: center;
+    }
+
+    .shield-icon {
+      width: 64px;
+      height: 64px;
+      margin: 0 auto 24px;
+      background: linear-gradient(135deg, var(--accent), #ff6b81);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .shield-icon svg {
+      width: 32px;
+      height: 32px;
+      fill: white;
+    }
+
+    .card h1 {
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    .card p {
+      color: var(--text-muted);
+      font-size: 15px;
+      line-height: 1.6;
+      margin-bottom: 32px;
+    }
+
+    .singpass-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      background: var(--singpass-red);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      padding: 16px 32px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.2s;
+      width: 100%;
+      justify-content: center;
+    }
+
+    .singpass-btn:hover {
+      background: #b5342e;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 16px rgba(199, 62, 54, 0.4);
+    }
+
+    .singpass-btn svg {
+      width: 24px;
+      height: 24px;
+      fill: white;
+    }
+
+    .steps {
+      margin-top: 36px;
+      text-align: left;
+    }
+
+    .steps h3 {
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+    }
+
+    .step {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .step-num {
+      width: 28px;
+      height: 28px;
+      min-width: 28px;
+      border-radius: 50%;
+      background: var(--accent);
+      color: white;
+      font-size: 13px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .step-text {
+      color: var(--text-muted);
+      font-size: 14px;
+      line-height: 1.5;
+      padding-top: 3px;
+    }
+
+    .trust-badges {
+      margin-top: 32px;
+      display: flex;
+      justify-content: center;
+      gap: 24px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+    }
+
+    .badge {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--text-muted);
+      font-size: 12px;
+    }
+
+    .badge svg {
+      width: 16px;
+      height: 16px;
+      fill: var(--success);
+    }
+
+    .footer {
+      text-align: center;
+      padding: 20px;
+      color: var(--text-muted);
+      font-size: 12px;
+      border-top: 1px solid var(--border);
+    }
+
+    .footer a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    @media (max-width: 520px) {
+      .card { padding: 32px 24px; }
+      .trust-badges { flex-direction: column; align-items: center; gap: 12px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="logo">JustRent<span>Lah</span></div>
+    <a href="https://www.justrentlah.com" class="nav-link">Back to store</a>
+  </header>
+
+  <main class="main">
+    <div class="card">
+      <div class="shield-icon">
+        <svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/></svg>
+      </div>
+      <h1>Verify Your Identity</h1>
+      <p>
+        To ensure the safety of our equipment, we require a quick identity
+        verification via Singpass before your rental is confirmed.
+        This takes less than 30 seconds.
+      </p>
+
+      <a href="/auth/login?<%= orderId ? 'order_id=' + orderId + '&' : '' %><%= customerId ? 'customer_id=' + customerId + '&' : '' %><%= email ? 'email=' + encodeURIComponent(email) : '' %>"
+         class="singpass-btn">
+        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+        Verify with Singpass
+      </a>
+
+      <div class="steps">
+        <h3>How it works</h3>
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-text">Click the button above to open Singpass login</div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-text">Scan the QR code with your Singpass app or log in with your credentials</div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-text">Your identity is verified instantly and your rental is confirmed</div>
+        </div>
+      </div>
+
+      <div class="trust-badges">
+        <div class="badge">
+          <svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg>
+          Secured by Singpass
+        </div>
+        <div class="badge">
+          <svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
+          Data encrypted
+        </div>
+        <div class="badge">
+          <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+          Government verified
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    &copy; 2024 JustRentLah. <a href="https://www.justrentlah.com">www.justrentlah.com</a>
+    <br>Identity verification powered by Singapore Government Singpass.
+  </footer>
+</body>
+</html>
