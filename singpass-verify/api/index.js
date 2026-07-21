@@ -6,6 +6,7 @@ const authRoutes = require('../src/routes/auth');
 const verifyRoutes = require('../src/routes/verify');
 const adminRoutes = require('../src/routes/admin');
 const webhookRoutes = require('../src/routes/webhook');
+const counterRoutes = require('../src/routes/counter');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -22,6 +23,7 @@ app.use('/auth', authRoutes);
 app.use('/verify', verifyRoutes);
 app.use('/admin', adminRoutes);
 app.use('/webhook', webhookRoutes);
+app.use('/counter', counterRoutes);
 
 app.get('/health', (req, res) => res.json({ status: 'ok' }));
 
