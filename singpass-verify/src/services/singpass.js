@@ -43,7 +43,9 @@ function buildAuthorizationUrl(state, nonce, codeChallenge) {
   // Free-tier Standard identity scopes only — no "Finance" scopes (which
   // would trigger Myinfo Plus at $0.25/txn). Must match the scopes registered
   // on the Singpass Developer Portal.
-  const scope = process.env.MYINFO_SCOPES || 'openid name uinfin mobileno regadd';
+  const scope = process.env.MYINFO_SCOPES ||
+    'openid name uinfin dob residentialstatus nationality ' +
+    'passportnumber passportexpirydate passtype passstatus mobileno email regadd';
   const params = new URLSearchParams({
     response_type: 'code',
     client_id: config.clientId,
@@ -131,14 +133,35 @@ async function fetchMyinfoPersonData(accessToken, sub) {
 }
 
 function extractPersonDetails(myinfoData) {
+  const uinfin = myinfoData?.uinfin?.value || '';
   return {
     name: myinfoData?.name?.value || '',
-    nric_last4: (myinfoData?.uinfin?.value || '').slice(-4),
+    nric_last4: uinfin.slice(-4),
     phone: myinfoData?.mobileno?.nbr?.value || '',
     email: myinfoData?.email?.value || '',
     address: formatAddress(myinfoData?.regadd),
     dob: myinfoData?.dob?.value || '',
+    residential_status: codeOrDesc(myinfoData?.residentialstatus),
+    nationality: codeOrDesc(myinfoData?.nationality),
+    passport_number: myinfoData?.passportnumber?.value || '',
+    passport_expiry: myinfoData?.passportexpirydate?.value || '',
+    pass_type: codeOrDesc(myinfoData?.passtype),
+    pass_status: codeOrDesc(myinfoData?.passstatus),
+    // Convenience flag for the counter/admin: is this renter a local or a foreigner?
+    is_foreigner: isForeigner(myinfoData?.residentialstatus),
   };
+}
+
+// Myinfo coded fields come as { code, desc } (or { value }); prefer the readable desc.
+function codeOrDesc(field) {
+  if (!field) return '';
+  return field.desc || field.value || field.code || '';
+}
+
+function isForeigner(residentialStatus) {
+  const code = (residentialStatus?.code || residentialStatus?.value || '').toUpperCase();
+  // C = Citizen, P = PR; anything else (e.g. pass holders) is a foreigner
+  return code !== '' && code !== 'C' && code !== 'P';
 }
 
 function formatAddress(regadd) {

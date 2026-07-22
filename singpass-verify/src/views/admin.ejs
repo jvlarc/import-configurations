@@ -60,6 +60,22 @@
       font-size: 12px;
       font-weight: 600;
     }
+    .badge-local {
+      background: rgba(90,140,255,0.15);
+      color: #7aa2ff;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .badge-foreign {
+      background: rgba(233,69,96,0.15);
+      color: var(--accent);
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+    }
     .empty {
       text-align: center;
       padding: 48px;
@@ -84,6 +100,9 @@
             <tr>
               <th>Name</th>
               <th>NRIC (last 4)</th>
+              <th>Type</th>
+              <th>Nationality</th>
+              <th>Pass Status</th>
               <th>Email</th>
               <th>Booqable Customer</th>
               <th>Verified At</th>
@@ -95,6 +114,15 @@
               <tr>
                 <td><%= v.name %></td>
                 <td>****<%= v.nric_last4 %></td>
+                <td>
+                  <% if (v.is_foreigner) { %>
+                    <span class="badge-foreign">Foreigner</span>
+                  <% } else if (v.residential_status) { %>
+                    <span class="badge-local"><%= v.residential_status %></span>
+                  <% } else { %>-<% } %>
+                </td>
+                <td><%= v.nationality || '-' %></td>
+                <td><%= v.pass_status || '-' %></td>
                 <td><%= v.email || '-' %></td>
                 <td><%= v.booqableCustomerId || '-' %></td>
                 <td><%= new Date(v.verifiedAt).toLocaleString('en-SG', { timeZone: 'Asia/Singapore' }) %></td>
