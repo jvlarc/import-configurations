@@ -72,9 +72,9 @@ router.get('/callback', async (req, res) => {
       nric_last4: (idTokenPayload.sub || '').slice(-4),
     };
 
-    if (tokens.access_token && idTokenPayload.sub) {
+    if (tokens.access_token) {
       try {
-        const myinfoData = await singpass.fetchMyinfoPersonData(tokens.access_token, idTokenPayload.sub);
+        const myinfoData = await singpass.fetchMyinfoPersonData(tokens.access_token);
         personDetails = singpass.extractPersonDetails(myinfoData);
       } catch (err) {
         console.warn('Myinfo fetch skipped:', err.message);

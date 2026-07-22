@@ -9,9 +9,9 @@ const config = {
   authUrl: process.env.SINGPASS_AUTH_URL || 'https://stg-id.singpass.gov.sg/auth',
   tokenUrl: process.env.SINGPASS_TOKEN_URL || 'https://stg-id.singpass.gov.sg/token',
   jwksUrl: process.env.SINGPASS_JWKS_URL || 'https://stg-id.singpass.gov.sg/.well-known/keys',
-  myinfoUrl: process.env.MYINFO_API_URL || 'https://sandbox.api.myinfo.gov.sg/com/v4',
-  myinfoClientId: process.env.MYINFO_CLIENT_ID,
-  myinfoApiKey: process.env.MYINFO_API_KEY,
+  // Myinfo v5 (FAPI 2.0) returns person data from the OIDC /userinfo endpoint
+  // of the same auth server — NOT the legacy v4 /person API.
+  userinfoUrl: process.env.SINGPASS_USERINFO_URL || 'https://stg-id.singpass.gov.sg/userinfo',
 };
 
 let signingKey = null;
@@ -114,22 +114,44 @@ async function decryptAndVerifyIdToken(idToken) {
   return payload;
 }
 
-async function fetchMyinfoPersonData(accessToken, sub) {
-  const url = `${config.myinfoUrl}/person/${sub}`;
-  const res = await fetch(url, {
+// Myinfo v5 / FAPI 2.0: call the /userinfo endpoint with the access token.
+// The response is a signed-then-encrypted JWT (JWE) whose claims contain the
+// Myinfo person data. We decrypt with our private key and verify the signature
+// against Singpass's JWKS, same as the ID token.
+async function fetchMyinfoPersonData(accessToken) {
+  const res = await fetch(config.userinfoUrl, {
+    method: 'GET',
     headers: {
       'Authorization': `Bearer ${accessToken}`,
-      'X-API-Key': config.myinfoApiKey,
-      'Content-Type': 'application/json',
+      'Accept': 'application/jwt',
     },
   });
 
   if (!res.ok) {
     const errText = await res.text();
-    throw new Error(`Myinfo fetch failed: ${res.status} ${errText}`);
+    throw new Error(`Myinfo /userinfo fetch failed: ${res.status} ${errText}`);
   }
 
+  const contentType = res.headers.get('content-type') || '';
+  // userinfo may return a compact JWE (application/jwt) or plain JSON depending
+  // on config; handle both.
+  if (contentType.includes('application/jwt') || contentType.includes('application/jose')) {
+    const jwe = (await res.text()).trim();
+    return decryptAndVerifyClaims(jwe);
+  }
   return res.json();
+}
+
+async function decryptAndVerifyClaims(jwe) {
+  const encKey = await getEncryptionKey();
+  const { plaintext } = await compactDecrypt(jwe, encKey);
+  const jws = new TextDecoder().decode(plaintext);
+  const JWKS = createRemoteJWKSet(new URL(config.jwksUrl));
+  const { payload } = await jwtVerify(jws, JWKS, {
+    issuer: config.authUrl.replace('/auth', ''),
+    audience: config.clientId,
+  });
+  return payload;
 }
 
 function extractPersonDetails(myinfoData) {
