@@ -1,0 +1,20 @@
+{
+  "name": "justrentlah-singpass-verify",
+  "version": "1.0.0",
+  "description": "Singpass identity verification for JustRentLah (Booqable integration)",
+  "main": "api/index.js",
+  "scripts": {
+    "dev": "node api/index.js",
+    "start": "node api/index.js"
+  },
+  "dependencies": {
+    "cookie-parser": "^1.4.6",
+    "crypto": "^1.0.1",
+    "dotenv": "^16.4.5",
+    "ejs": "^3.1.10",
+    "express": "^4.21.0",
+    "jose": "^5.6.3",
+    "node-fetch": "^2.7.0",
+    "uuid": "^10.0.0"
+  }
+}

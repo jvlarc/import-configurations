@@ -1,0 +1,13 @@
+services:
+  singpass-verify:
+    build: .
+    container_name: justrentlah-singpass-verify
+    restart: unless-stopped
+    ports:
+      - "8947:3000"
+    volumes:
+      - ./data:/app/data
+    env_file:
+      - .env
+    environment:
+      - NODE_ENV=production

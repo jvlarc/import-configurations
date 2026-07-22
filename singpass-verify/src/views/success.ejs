@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Verified - JustRentLah</title>
+  <style>
+    :root {
+      --primary: #1a1a2e;
+      --accent: #e94560;
+      --bg: #0f0f23;
+      --card-bg: #16213e;
+      --text: #eaeaea;
+      --text-muted: #a0a0b0;
+      --border: #2a2a4a;
+      --success: #00d97e;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    .header {
+      background: var(--primary);
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+    }
+    .logo { font-size: 24px; font-weight: 800; letter-spacing: -0.5px; }
+    .logo span { color: var(--accent); }
+    .nav-link { color: var(--text-muted); text-decoration: none; font-size: 14px; }
+    .main {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+    }
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 48px 40px;
+      max-width: 480px;
+      width: 100%;
+      text-align: center;
+    }
+    .check-icon {
+      width: 80px;
+      height: 80px;
+      margin: 0 auto 24px;
+      background: linear-gradient(135deg, var(--success), #00b368);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: scaleIn 0.5s ease-out;
+    }
+    @keyframes scaleIn {
+      0% { transform: scale(0); opacity: 0; }
+      60% { transform: scale(1.1); }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    .check-icon svg { width: 40px; height: 40px; fill: white; }
+    .card h1 { font-size: 28px; font-weight: 700; margin-bottom: 8px; color: var(--success); }
+    .card .subtitle { font-size: 18px; margin-bottom: 24px; }
+    .card p { color: var(--text-muted); font-size: 15px; line-height: 1.6; margin-bottom: 12px; }
+    .verification-id {
+      background: rgba(0,217,126,0.1);
+      border: 1px solid rgba(0,217,126,0.3);
+      border-radius: 8px;
+      padding: 12px 16px;
+      margin: 24px 0;
+      font-family: monospace;
+      font-size: 13px;
+      color: var(--success);
+    }
+    .return-btn {
+      display: inline-block;
+      background: var(--accent);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      padding: 14px 32px;
+      font-size: 16px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.2s;
+      margin-top: 16px;
+    }
+    .return-btn:hover { background: #d63851; transform: translateY(-1px); }
+    .footer {
+      text-align: center;
+      padding: 20px;
+      color: var(--text-muted);
+      font-size: 12px;
+      border-top: 1px solid var(--border);
+    }
+    .footer a { color: var(--accent); text-decoration: none; }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="logo">JustRent<span>Lah</span></div>
+    <a href="https://www.justrentlah.com" class="nav-link">Back to store</a>
+  </header>
+  <main class="main">
+    <div class="card">
+      <div class="check-icon">
+        <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+      </div>
+      <h1>Verified!</h1>
+      <div class="subtitle">Welcome, <%= name || 'Customer' %></div>
+      <p>Your identity has been successfully verified via Singpass. Your rental booking is now confirmed.</p>
+      <div class="verification-id">
+        Verification ID: <%= verificationId %>
+      </div>
+      <p>You'll receive a confirmation email shortly with your booking details.</p>
+      <a href="<%= returnUrl %>" class="return-btn">Return to JustRentLah</a>
+    </div>
+  </main>
+  <footer class="footer">
+    &copy; 2024 JustRentLah. <a href="https://www.justrentlah.com">www.justrentlah.com</a>
+  </footer>
+</body>
+</html>
