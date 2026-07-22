@@ -78,25 +78,25 @@ docker compose up -d --build
 Check it's healthy on the LAN:
 
 ```bash
-curl http://192.168.2.15:3100/health          # -> {"status":"ok"}
-curl http://192.168.2.15:3100/.well-known/jwks.json   # -> your public JWKS
+curl http://192.168.2.15:8947/health          # -> {"status":"ok"}
+curl http://192.168.2.15:8947/.well-known/jwks.json   # -> your public JWKS
 ```
 
-The compose file maps host port **3100** → container 3000 and persists the
+The compose file maps host port **8947** → container 3000 and persists the
 verification store in `./data`.
 
 ### Adding it via the Unraid Docker UI (alternative to CLI)
 - Docker tab → **Add Container**
 - Repository: build locally, or point to the compose stack via the
   **Compose Manager** plugin (recommended — it reads `docker-compose.yml`).
-- Map port `3100:3000`, bind `./data` → `/app/data`, and load the `.env` file.
+- Map port `8947:3000`, bind `./data` → `/app/data`, and load the `.env` file.
 
 ---
 
 ## 5. Expose publicly over HTTPS (Cloudflare Tunnel)
 
 Singpass staging/production must be able to reach your JWKS + callback over
-HTTPS, so `192.168.2.15:3100` needs a public hostname.
+HTTPS, so `192.168.2.15:8947` needs a public hostname.
 
 ```bash
 # Install cloudflared (or use the Unraid Community Apps "cloudflared" template)
@@ -113,7 +113,7 @@ tunnel: justrentlah-verify
 credentials-file: /root/.cloudflared/<tunnel-id>.json
 ingress:
   - hostname: verify.justrentlah.com
-    service: http://192.168.2.15:3100
+    service: http://192.168.2.15:8947
   - service: http_status:404
 ```
 
@@ -129,7 +129,7 @@ https://verify.justrentlah.com/verify
 ```
 
 > Alternative: Nginx Proxy Manager (Unraid Community Apps) with a Let's Encrypt
-> cert, reverse-proxying `verify.justrentlah.com` → `192.168.2.15:3100`.
+> cert, reverse-proxying `verify.justrentlah.com` → `192.168.2.15:8947`.
 
 ---
 

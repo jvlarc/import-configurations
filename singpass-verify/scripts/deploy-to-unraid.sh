@@ -50,8 +50,8 @@ docker compose up -d --build
 
 echo ""
 echo ">> Up. Check on the LAN:"
-echo "   curl http://192.168.2.15:3100/health"
-echo "   curl http://192.168.2.15:3100/.well-known/jwks.json"
+echo "   curl http://192.168.2.15:8947/health"
+echo "   curl http://192.168.2.15:8947/.well-known/jwks.json"
 EOF
 
 echo ">> Done. Next: expose https://verify.justrentlah.com via Cloudflare Tunnel (see DEPLOYMENT.md step 5)."

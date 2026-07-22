@@ -4,7 +4,7 @@ services:
     container_name: justrentlah-singpass-verify
     restart: unless-stopped
     ports:
-      - "3100:3000"
+      - "8947:3000"
     volumes:
       - ./data:/app/data
     env_file:
