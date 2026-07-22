@@ -169,28 +169,46 @@ function extractPersonDetails(myinfoData) {
     passport_expiry: myinfoData?.passportexpirydate?.value || '',
     pass_type: codeOrDesc(myinfoData?.passtype),
     pass_status: codeOrDesc(myinfoData?.passstatus),
+    // Pass (work/student pass) expiry — distinct from passport expiry. This is
+    // often the only expiry available for foreign pass holders.
+    pass_expiry: myinfoData?.passexpirydate?.value || '',
     // Convenience flag for the counter/admin: is this renter a local or a foreigner?
-    is_foreigner: isForeigner(myinfoData?.residentialstatus),
+    is_foreigner: isForeigner(uinfin, myinfoData?.residentialstatus),
   };
 }
 
-// Myinfo coded fields come as { code, desc } (or { value }); prefer the readable desc.
+// Myinfo coded fields come as { code, desc } (or { value }); prefer the readable
+// desc. Also tolerate a plain string, in case userinfo returns a flat claim.
 function codeOrDesc(field) {
   if (!field) return '';
+  if (typeof field === 'string') return field;
   return field.desc || field.value || field.code || '';
 }
 
-function isForeigner(residentialStatus) {
-  const code = (residentialStatus?.code || residentialStatus?.value || '').toUpperCase();
-  // C = Citizen, P = PR; anything else (e.g. pass holders) is a foreigner
-  return code !== '' && code !== 'C' && code !== 'P';
+// A renter is a foreigner if they hold a pass rather than citizenship/PR.
+// Reliable signals (confirmed against Myinfo test personas):
+//   - residential status C (Citizen) or P (PR) => local
+//   - pass holders have NO residential status, so fall back to the FIN prefix:
+//     S/T are issued to citizens & PRs; F/G/M are issued to foreigners.
+function isForeigner(uinfin, residentialStatus) {
+  const status = (residentialStatus?.code || residentialStatus?.value || '').toUpperCase();
+  if (status === 'C' || status === 'P') return false;
+  if (status !== '') return true; // any other explicit status (e.g. Alien)
+  const prefix = (uinfin || '').charAt(0).toUpperCase();
+  return prefix === 'F' || prefix === 'G' || prefix === 'M';
 }
 
 function formatAddress(regadd) {
   if (!regadd) return '';
+  // Unstructured address form: line1 / line2 (used for some overseas/foreign addresses).
+  if (regadd.line1?.value || regadd.line2?.value) {
+    return [regadd.line1?.value, regadd.line2?.value].filter(Boolean).join(', ');
+  }
+  // Structured SG address form: block / street / building / #floor-unit / postal.
   const parts = [
     regadd.block?.value,
     regadd.street?.value,
+    regadd.building?.value,
     regadd.floor?.value ? `#${regadd.floor.value}-${regadd.unit?.value || ''}` : '',
     regadd.postal?.value ? `S(${regadd.postal.value})` : '',
   ].filter(Boolean);
