@@ -40,10 +40,14 @@ function generateCodeChallenge(verifier) {
 }
 
 function buildAuthorizationUrl(state, nonce, codeChallenge) {
+  // Free-tier Standard identity scopes only — no "Finance" scopes (which
+  // would trigger Myinfo Plus at $0.25/txn). Must match the scopes registered
+  // on the Singpass Developer Portal.
+  const scope = process.env.MYINFO_SCOPES || 'openid name uinfin mobileno regadd';
   const params = new URLSearchParams({
     response_type: 'code',
     client_id: config.clientId,
-    scope: 'openid',
+    scope,
     redirect_uri: config.redirectUri,
     state,
     nonce,
@@ -55,8 +59,9 @@ function buildAuthorizationUrl(state, nonce, codeChallenge) {
 
 async function buildClientAssertion() {
   const key = await getSigningKey();
+  const kid = process.env.SIGNING_KID || config.clientId;
   return new SignJWT({})
-    .setProtectedHeader({ alg: 'ES256', typ: 'JWT', kid: config.clientId })
+    .setProtectedHeader({ alg: 'ES256', typ: 'JWT', kid })
     .setIssuer(config.clientId)
     .setSubject(config.clientId)
     .setAudience(config.tokenUrl)
